@@ -29,7 +29,7 @@ Schedules the backup task
 
 // Linux
 
-    0 */12 * * * /usr/bin/python3 /home/usuario/backup.py
+    0 */12 * * * /usr/bin/python3 CaminhoProjeto/backup.py
 
 // Windows
     Use o Agendador de Tarefas.
@@ -37,11 +37,11 @@ Schedules the backup task
 Configure:
 
 Programa:
-python.exe
+    python.exe
 
 Argumentos:
 
-C:\backup\backup.py
+CaminhoProjeto\backup.py
 
 Gatilho:
 
