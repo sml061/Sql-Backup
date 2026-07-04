@@ -1,0 +1,5 @@
+# Ignore the .env file to prevent sensitive information from being committed to version control
+.env
+
+# Ignore the virtual environment directory to avoid committing dependencies and environment-specific files
+venv/
