@@ -1,12 +1,11 @@
-Create venv
+Create the Python venv command 
+    - Command
 
-// Create the Python venv command 
-  - Command
-  
-  python -m venv venv
+    python -m venv venv
 
------------------------
+------------------------------
 
-// Then enter venv
-  -Linux:
+Then enter venv
+    - Linux
+    
     source venv/bin/activate
