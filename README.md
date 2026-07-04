@@ -1,10 +1,9 @@
-// Create the Python venv.
-  -Command:
-    python -m venv venv
+Create venv
 
-// or
-  -Command:
-    python3 -m venv venv
+// Create the Python venv command 
+  - Command
+  
+  python -m venv venv
 
 -----------------------
 
