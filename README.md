@@ -26,6 +26,7 @@ Create the .env file in the project's base directory; use the following template
 ------------------------------
 
 Schedules the backup task
+
 // Linux
 
     0 */12 * * * /usr/bin/python3 /home/usuario/backup.py
