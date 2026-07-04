@@ -66,18 +66,25 @@ def compactar_backup():
         with open(f"{OLD_BACKUP}.gz", "wb") as arquivo_compactado:
             subprocess.run(["gzip"], stdin=arquivo, stdout=arquivo_compactado)
 
+def criar_log(mensagem):
+    log_file = "backup.log"
+    with open(log_file, "a") as log:
+        log.write(f"{datetime.datetime.now()}: {mensagem}\n")
+
 
 if criar_backup():
     print("Backup realizado com sucesso.")
     try:
         substituir_backup()
         compactar_backup()
-        print(f"Backup compactado: {OLD_BACKUP}.gz")
+        criar_log(f"Backup criado e compactado: {OLD_BACKUP}.gz")
         os.remove(OLD_BACKUP)
     except Exception as e:
         print(f"Erro ao compactar o backup: {e}")
+        criar_log(f"Erro ao compactar o backup: {e}")
 else:
     if TEMP_BACKUP.exists():
         TEMP_BACKUP.unlink()
 
     print("Backup falhou. Backup antigo mantido.")
+    criar_log("Backup falhou. Backup antigo mantido.")
