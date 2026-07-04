@@ -1,10 +1,14 @@
 import subprocess
 import os
+import datetime
+import gzip
+import shutil
 from pathlib import Path
 from dotenv import load_dotenv
 
 # Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
+data_hoje = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 
 # Configuraçao
 MYSQLDUMP = r"/opt/lampp/bin/mysqldump"
@@ -17,7 +21,7 @@ DATABASE = os.getenv("DB_NAME")
 BACKUP_DIR = Path("/opt/MySql/backups")
 BACKUP_DIR.mkdir(exist_ok=True)
 
-OLD_BACKUP = BACKUP_DIR / "backup_atual.sql"
+OLD_BACKUP = BACKUP_DIR / f"backup_{data_hoje}.sql"
 TEMP_BACKUP = BACKUP_DIR / "backup_temp.sql"
 
 def criar_backup():
@@ -57,10 +61,21 @@ def substituir_backup():
 
     TEMP_BACKUP.rename(OLD_BACKUP)
 
+def compactar_backup():
+    with open(OLD_BACKUP, "rb") as arquivo:
+        with open(f"{OLD_BACKUP}.gz", "wb") as arquivo_compactado:
+            subprocess.run(["gzip"], stdin=arquivo, stdout=arquivo_compactado)
+
 
 if criar_backup():
-    substituir_backup()
     print("Backup realizado com sucesso.")
+    try:
+        substituir_backup()
+        compactar_backup()
+        print(f"Backup compactado: {OLD_BACKUP}.gz")
+        os.remove(OLD_BACKUP)
+    except Exception as e:
+        print(f"Erro ao compactar o backup: {e}")
 else:
     if TEMP_BACKUP.exists():
         TEMP_BACKUP.unlink()
