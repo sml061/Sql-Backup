@@ -32,8 +32,9 @@ HOST = os.getenv("DB_HOST")
 USER = os.getenv("DB_USER")
 PASSWORD = os.getenv("DB_PASSWORD")
 DATABASE = os.getenv("DB_NAME")
+DIR = os.getcwd()
 
-BACKUP_DIR = Path("/opt/MySql/backups")
+BACKUP_DIR = Path(f"{DIR}/backups")
 BACKUP_DIR.mkdir(exist_ok=True)
 
 OLD_BACKUP = BACKUP_DIR / f"backup_{data_hoje}.sql"
