@@ -3,6 +3,7 @@ import os
 import datetime
 import gzip
 import shutil
+import shutil
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -11,7 +12,21 @@ load_dotenv()
 data_hoje = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
 
 # Configuraçao
-MYSQLDUMP = r"/opt/lampp/bin/mysqldump"
+
+possiveis = [
+    shutil.which("mysqldump"),
+    "/opt/lampp/bin/mysqldump",
+    "/usr/bin/mysqldump",
+    "/usr/local/bin/mysqldump",
+]
+
+MYSQLDUMP = next((p for p in possiveis if p and os.path.exists(p)), None)
+
+if MYSQLDUMP is None:
+    raise FileNotFoundError(
+        "mysqldump não encontrado. Instale MySQL/MariaDB ou configure o caminho."
+    )
+
 
 HOST = os.getenv("DB_HOST")
 USER = os.getenv("DB_USER")
