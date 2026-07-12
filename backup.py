@@ -34,10 +34,13 @@ PASSWORD = os.getenv("DB_PASSWORD")
 DATABASE = os.getenv("DB_NAME")
 DIR = os.getcwd()
 
+DATABASE_DIR = Path(f"{DIR}/backups/{DATABASE}")
+DATABASE_DIR.mkdir(exist_ok=True)
+
 BACKUP_DIR = Path(f"{DIR}/backups")
 BACKUP_DIR.mkdir(exist_ok=True)
 
-OLD_BACKUP = BACKUP_DIR / f"backup_{data_hoje}.sql"
+OLD_BACKUP = BACKUP_DIR / DATABASE / f"{DATABASE}_{data_hoje}.sql"
 TEMP_BACKUP = BACKUP_DIR / "backup_temp.sql"
 
 def criar_backup():

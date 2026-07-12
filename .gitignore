@@ -13,3 +13,6 @@ __pycache__/
 # Ignore backup files created by the application
 *.sql
 backups/
+
+# Ignore json files
+*.json
