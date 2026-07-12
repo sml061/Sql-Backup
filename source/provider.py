@@ -18,6 +18,12 @@ parser.add_argument(
     action="store_true",
     help="Adicionar um Provider"
 )
+parser.add_argument(
+    "-d",
+    "--delete",
+    action="store_true",
+    help="Excluir um Provider"
+)
 
 
 ARQUIVO_JSON = Path(__file__).parent.parent / "provider.json"
@@ -83,6 +89,7 @@ DB_NAME='{db}'
         except KeyboardInterrupt:
             limparTela()
             exit(0)
+            
 
 
 class addProvider:
@@ -138,6 +145,46 @@ class addProvider:
         except Exception as e:
             print(e)
 
+class delProvider:
+    @staticmethod
+    def ExcluirProvider():
+
+        with open(ARQUIVO_JSON, "r", encoding="utf-8") as arquivo:
+            providers = json.load(arquivo)
+
+        limparTela()
+
+        print("Providers disponíveis:\n")
+
+        for provider in providers:
+            print(f"{provider['ID']} - {provider['NOME_PROVIDER']}")
+
+        try:
+            provider_id = int(input("\nID do provider que deseja excluir: "))
+        except (ValueError, KeyboardInterrupt):
+            limparTela()
+            return
+
+        for provider in providers:
+
+            if provider["ID"] == provider_id:
+
+                providers.remove(provider)
+
+                with open(ARQUIVO_JSON, "w", encoding="utf-8") as arquivo:
+                    json.dump(
+                        providers,
+                        arquivo,
+                        indent=4,
+                        ensure_ascii=False
+                    )
+
+                print("\nProvider removido com sucesso.")
+                return
+
+        print("\nProvider não encontrado.")
+
+
 limparTela()
 
 if len(sys.argv) == 1:
@@ -152,6 +199,8 @@ def Main():
         setProvider.main()
     if args.add:
         addProvider.AdicionarProvider()
+    if args.delete:
+        delProvider.ExcluirProvider()
 
 if __name__ == "__main__":
     Main()
