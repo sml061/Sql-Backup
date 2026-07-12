@@ -50,8 +50,10 @@ class setProvider:
 
         setProvider.MontarListaProviders()
 
-        for i, p in enumerate(setProvider.providers_names):
-            print(f"{i + 1} {p}\n")
+        print("Providers Disponiveis: \n")
+
+        for provider in resultado_json:
+            print(f"{provider['ID']} {provider['NOME_PROVIDER']}")
 
     @staticmethod
     def EscreverEnv(db, user, password):
@@ -64,8 +66,7 @@ DB_NAME='{db}'
             arquivo.write(conteudo)
 
     @staticmethod
-    def set(id):
-        limparTela()     
+    def set(id):  
         for p in resultado_json:
             if p['ID'] == int(id):
                 DB = p['DB']
@@ -73,10 +74,14 @@ DB_NAME='{db}'
                 PASSWORD = p['PASSWORD']
 
                 setProvider.EscreverEnv(DB, USER, PASSWORD)
+
+                print("\nProvider selecionado com sucesso.\n")
+                return
             elif p['ID'] != id:
                 continue
-            else:
-                print("Opcao Invalida")
+            print("\nProvider não encontrado.\n")
+            input()
+            Main()
 
     def main():
         limparTela()
@@ -84,7 +89,7 @@ DB_NAME='{db}'
         setProvider.PrintarListaProviders()
 
         try:
-            id = input("~: ")
+            id = int(input("\nID do provider que deseja selecionar: "))
             setProvider.set(id)
         except KeyboardInterrupt:
             limparTela()
@@ -149,14 +154,11 @@ class delProvider:
     @staticmethod
     def ExcluirProvider():
 
-        with open(ARQUIVO_JSON, "r", encoding="utf-8") as arquivo:
-            providers = json.load(arquivo)
-
         limparTela()
 
         print("Providers disponíveis:\n")
 
-        for provider in providers:
+        for provider in resultado_json:
             print(f"{provider['ID']} - {provider['NOME_PROVIDER']}")
 
         try:
@@ -165,15 +167,15 @@ class delProvider:
             limparTela()
             return
 
-        for provider in providers:
+        for provider in resultado_json:
 
             if provider["ID"] == provider_id:
 
-                providers.remove(provider)
+                resultado_json.remove(provider)
 
                 with open(ARQUIVO_JSON, "w", encoding="utf-8") as arquivo:
                     json.dump(
-                        providers,
+                        resultado_json,
                         arquivo,
                         indent=4,
                         ensure_ascii=False
