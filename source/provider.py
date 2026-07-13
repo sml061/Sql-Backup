@@ -1,3 +1,4 @@
+import readline
 import sys
 import argparse
 import json
@@ -22,7 +23,13 @@ parser.add_argument(
     "-d",
     "--delete",
     action="store_true",
-    help="Excluir um Provider"
+    help="Excluir Provider"
+)
+parser.add_argument(
+    "-u",
+    "--update",
+    action="store_true",
+    help="Atualizar Provider"
 )
 
 
@@ -34,6 +41,18 @@ with open(ARQUIVO_JSON, "r") as arquivo:
 
 def limparTela():
     os.system("clear")
+
+def input_com_padrao(prompt, prefill_value):
+    
+    # Função que cola o texto inicial automaticamente
+    def hook():
+        readline.insert_text(prefill_value)
+    
+    readline.set_startup_hook(hook)
+    try:
+        return input(prompt)
+    finally:
+        readline.set_startup_hook(None)
 
 class setProvider:
 
@@ -186,6 +205,75 @@ class delProvider:
 
         print("\nProvider não encontrado.")
 
+class updateProvider:
+
+    @staticmethod
+    def getDataProvider(id):
+
+
+        for provider in resultado_json:
+            if provider['ID'] == id:
+                try:
+                    limparTela()
+                    print(f"       Atualizar Provider\n\n")
+                    
+                    nome_provider = input_com_padrao("Provider Name: ", provider['NOME_PROVIDER'])
+                    limparTela()
+
+                    print(f"       Atualizar Provider\n\n")
+
+                    db = input_com_padrao("Data Base: ", provider['DB'])
+                    limparTela()
+
+                    print(f"       Atualizar Provider\n\n")
+
+                    user = input_com_padrao("User DB: ", provider['USER'])
+                    limparTela()
+
+                    print(f"       Atualizar Provider\n\n")
+
+                    password = input_com_padrao("Password: ", provider['PASSWORD'])
+                    limparTela()
+
+                    provider["NOME_PROVIDER"] = nome_provider
+                    provider["DB"] = db
+                    provider["USER"] = user
+                    provider["PASSWORD"] = password
+
+                    break
+                except KeyboardInterrupt:
+                    limparTela()
+                    exit(0)
+            else:
+                continue  
+
+
+    @staticmethod
+    def updateProvider():
+        
+        with open(ARQUIVO_JSON, "w") as arquivo:
+            json.dump(resultado_json, arquivo, indent=4, ensure_ascii=False)
+
+    @staticmethod
+    def Main():
+        limparTela()
+        print(f"       Atualizar Provider\n\n\n")
+
+        try:
+            setProvider.PrintarListaProviders()
+            id = int(input("\n~: "))
+            
+            updateProvider.getDataProvider(id)
+            updateProvider.updateProvider()
+            
+        except KeyboardInterrupt:
+            limparTela()
+            exit(0)
+        
+
+        
+        
+
 
 limparTela()
 
@@ -203,6 +291,8 @@ def Main():
         addProvider.AdicionarProvider()
     if args.delete:
         delProvider.ExcluirProvider()
+    if args.update:
+        updateProvider.Main()
 
 if __name__ == "__main__":
     Main()
