@@ -31,6 +31,12 @@ parser.add_argument(
     action="store_true",
     help="Atualizar Provider"
 )
+parser.add_argument(
+    "-l",
+    "--list",
+    action="store_true",
+    help="List Providers"
+)
 
 
 ARQUIVO_JSON = Path(__file__).parent.parent / "provider.json"
@@ -69,10 +75,12 @@ class setProvider:
 
         setProvider.MontarListaProviders()
 
+        print("       Selecionar Provider\n\n")
+
         print("Providers Disponiveis: \n")
 
-        for provider in resultado_json:
-            print(f"{provider['ID']} {provider['NOME_PROVIDER']}")
+        for i, provider in enumerate(resultado_json):
+            print(f"{i + 1} {provider['NOME_PROVIDER']}")
 
     @staticmethod
     def EscreverEnv(db, user, password):
@@ -85,9 +93,11 @@ DB_NAME='{db}'
             arquivo.write(conteudo)
 
     @staticmethod
-    def set(id):  
-        for p in resultado_json:
-            if p['ID'] == int(id):
+    def set(id):
+        cnt = 1
+
+        for i, p in enumerate(resultado_json):
+            if cnt == int(id):
                 DB = p['DB']
                 USER = p['USER']
                 PASSWORD = p['PASSWORD']
@@ -96,13 +106,14 @@ DB_NAME='{db}'
 
                 print("\nProvider selecionado com sucesso.\n")
                 return
-            elif p['ID'] != id:
+            elif i != id:
+                cnt += 1
                 continue
             print("\nProvider não encontrado.\n")
             input()
             Main()
 
-    def main():
+    def Main():
         limparTela()
 
         setProvider.PrintarListaProviders()
@@ -177,8 +188,8 @@ class delProvider:
 
         print("Providers disponíveis:\n")
 
-        for provider in resultado_json:
-            print(f"{provider['ID']} - {provider['NOME_PROVIDER']}")
+        for i, provider in enumerate(resultado_json):
+            print(f"{i + 1} - {provider['NOME_PROVIDER']}")
 
         try:
             provider_id = int(input("\nID do provider que deseja excluir: "))
@@ -186,9 +197,12 @@ class delProvider:
             limparTela()
             return
 
+        cnt = 1
+        
         for provider in resultado_json:
 
-            if provider["ID"] == provider_id:
+
+            if cnt == provider_id:
 
                 resultado_json.remove(provider)
 
@@ -202,6 +216,9 @@ class delProvider:
 
                 print("\nProvider removido com sucesso.")
                 return
+            else:
+                cnt += 1
+                continue
 
         print("\nProvider não encontrado.")
 
@@ -211,8 +228,10 @@ class updateProvider:
     def getDataProvider(id):
 
 
+        cnt = 1
+
         for provider in resultado_json:
-            if provider['ID'] == id:
+            if cnt == id:
                 try:
                     limparTela()
                     print(f"       Atualizar Provider\n\n")
@@ -245,7 +264,8 @@ class updateProvider:
                     limparTela()
                     exit(0)
             else:
-                continue  
+                cnt += 1
+                continue 
 
 
     @staticmethod
@@ -270,7 +290,18 @@ class updateProvider:
             limparTela()
             exit(0)
         
+class listProviders:
 
+    @staticmethod
+    def list():
+
+        print("                 All Providers\n\n")
+
+        
+        for i, provider in enumerate(resultado_json):
+            print(f"Provider: {provider["NOME_PROVIDER"]}   |   DataBase: {provider["DB"]}")
+        
+        print("\n")
         
         
 
@@ -286,13 +317,15 @@ def Main():
     args = parser.parse_args()
 
     if args.set:
-        setProvider.main()
+        setProvider.Main()
     if args.add:
         addProvider.AdicionarProvider()
     if args.delete:
         delProvider.ExcluirProvider()
     if args.update:
         updateProvider.Main()
+    if args.list:
+        listProviders.list()
 
 if __name__ == "__main__":
     Main()
